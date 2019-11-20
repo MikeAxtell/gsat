@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+# main script. developed on python3.7.4
+# import built-ins
+import multiprocessing
+import sys
+import os
+import gzip
+import re
+# now import child modules provided with gsat
+import input_validation
+import find_adapter
+import trim_adapter
+import summarize_library
+import mature
+import build_db
+import writeShiny
+
+def process_file (fqfile):
+    print(multiprocessing.current_process().name, "is working on", fqfile)
+    if input_validation.args.noTrim:
+        trimfile = fqfile
+    else:
+        if input_validation.args.adapterSeq:
+            adapterseq = input_validation.args.adapterSeq
+        else:
+            adapterseq = find_adapter.find_a(fqfile,
+                                        input_validation.args.prefixSeq)
+        trimfile = trim_adapter.trim_adapter(
+            fqfile,
+            adapterseq,
+            input_validation.args.directory)
+        
+    countfile = summarize_library.extract_reads(trimfile,
+                    input_validation.args.directory)
+    return countfile
+
+def merge_trim_csv (odir):
+    tfilename = odir.rstrip("/") + '/' + 'triminfo.csv'
+    tfh = open(tfilename, 'w')
+    tfh.write("sample,category,count\n")
+    tfh.close()
+    os.system("cat *.f*q.triminfo.csv >> " + tfilename)
+    os.system("rm -f *.f*q.triminfo.csv")
+
+def merge_lib_csv (odir):
+    lfilename = odir.rstrip("/") + '/' + 'libinfo.csv'
+    lfh = open(lfilename, 'w')
+    lfh.write("sample,size,countType,firstBase,count\n")
+    lfh.close()
+    os.system("cat *.f*q*.libinfo.csv >> " + lfilename)
+    os.system("rm -f *.f*q*.libinfo.csv")
+
+def merge_mfs(mfiles, matureFa, odir):
+    left_clean = re.sub('^.*\/', '', matureFa)
+    mfname = odir.rstrip("/") + '/' + left_clean + '.gsat.mature.csv'
+    mfh = open(mfname, 'w')
+    #mfh.write("sample,matureName,sequence,editDistance,raw,rpm,rpm_20-24\n")
+    mfh.write("sample,matureName,sequence,editDistance,raw,rpm\n")
+    mfh.close()
+        
+    for mf in mfiles:
+        os.system("cat " + mf + " >> " + mfname)
+        os.system("rm -f " + mf)
+    return mfname
+    
+
+# process files one by one, unless there were already count files
+if input_validation.extract == 1:
+    count_files = []
+    if __name__ == '__main__':
+        with multiprocessing.Pool(input_validation.args.processors) as pool:
+            print("Using", input_validation.args.processors,
+                  "cpu cores to process fastq files")
+            for countfile in pool.map(process_file, input_validation.fq_files):
+                count_files.append(countfile)
+    else:
+        print("Error: gsat.py must be __main__ to process fastq files")
+        sys.exit()
+        
+    # Merge data
+    #  triminfo.csv and libinfo.csv .. very simple merges
+    if not input_validation.args.noTrim:
+        merge_trim_csv(input_validation.args.directory)
+    merge_lib_csv(input_validation.args.directory)    
+else:
+    count_files = input_validation.count_files
+
+if input_validation.look == 1:
+    if __name__ == '__main__':
+        with multiprocessing.Pool(input_validation.args.processors) as pool:
+            print("Using", input_validation.args.processors,
+                  "cpu cores to search count files")
+            alist = []
+            mfiles = []
+            for cf in count_files:
+                alist.append([cf,
+                            input_validation.args.matureFa,
+                            input_validation.args.directory,
+                            input_validation.args.maxEdit])
+            for mf in pool.map(mature.mature_search, alist):
+                mfiles.append(mf)
+    else:
+        print("Error: gsat.py must be __main__ to process count files")
+        sys.exit()
+    
+    # Merge mfiles
+    final_mfile = merge_mfs(mfiles,
+                            input_validation.args.matureFa,
+                            input_validation.args.directory)
+else:
+    final_mfile = input_validation.outfile_mat
+
+# Build SQLite database
+sqliteFile = build_db.build_db(final_mfile,
+                  input_validation.args.directory,
+                  input_validation.args.metadata,
+                  input_validation.md_factors)
+
+# Write Shiny app
+shiny_app = writeShiny.writeShiny(sqliteFile,
+                      input_validation.args.directory,
+                      final_mfile)
+
+print("Analysis complete.")
+print("cd into", input_validation.args.directory)
+print(' then type "R --vanilla <', shiny_app, '" to interactively examine results')
+print("(Requires R libraries DT, shiny, ggplot2, DBI)")
+
+
+
