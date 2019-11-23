@@ -124,24 +124,30 @@ By default, the query analysis will also report any variants up to a [Levenshtei
 
 ## Testing / Example
 
-Download (this file)[https://psu.box.com/v/gsatTestData], unpack it, and cd into the resulting directory:
+Download [this file](https://psu.box.com/v/gsatTestData), unpack it, and cd into the resulting directory:
 
-```tar -xvzf gsatData.tar.gz
-cd gsatData```
+```
+tar -xvzf gsatData.tar.gz
+cd gsatData
+```
 
 This folder has example `--metadata` and `--matureFa` files that will be used for an example analysis.
 
-Next we'll use `fasterq-dump` from the (NCBI SRA Toolkit)[https://www.ncbi.nlm.nih.gov/sra/docs/toolkitsoft/] suite, so first install the sra toolkit and in particular `fasterq-dump`.
+Next we'll use `fasterq-dump` from the [NCBI SRA Toolkit](https://www.ncbi.nlm.nih.gov/sra/docs/toolkitsoft/) suite, so first install the sra toolkit and in particular `fasterq-dump`.
 
 Retrieve three example fastq files:
 
-```fasterq-dump SRR6074038
+```
+fasterq-dump SRR6074038
 fasterq-dump SRR6074040
-fasterq-dump SRR6074031```
+fasterq-dump SRR6074031
+```
 
 These datasets are plant small RNA-seq, untrimmed reads. Run the following for a full analysis. we'll use 3 processors because we have 3 fastq files. But obviously reduce the setting for `--processors` if your system has fewer available.
 
-```gsat --directory . --metadata gsat_TEST_metadata.csv --matureFa gsat_TEST_queries.fasta --processors 3```
+```
+gsat --directory . --metadata gsat_TEST_metadata.csv --matureFa gsat_TEST_queries.fasta --processors 3
+```
 
 Once completed, if you have installed `R` and the required libraries (DT, Shiny, DBI, ggplot2), use `R --vanilla < gsat_TEST_queries.fasta.gsat.app.R` to initiate a visulaization. Copy the url to your web browser to view, and stop by `^c` on the terminal window.
 
