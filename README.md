@@ -16,9 +16,14 @@ mja18@psu.edu
   * DBI
   * ggplot2
 
+R and the above libraries are required for interactive visualization of the results, but not for the main analyses.
+
 ## Install
 
-??
+Install from the [Python Package Index](https://pypi.org) using `pip`. If you are unfamiliar with installing python packages, [read this](https://packaging.python.org/tutorials/installing-packages/) first. Most importantly, consider whether you want to install in a virtual environment, install to the User Site (using the `--user` switch), or perform a general installation.
+
+```pip install "gsat"```
+
 
 ## Usage
 ```
@@ -111,10 +116,10 @@ By default, the query analysis will also report any variants up to a [Levenshtei
     * DT
     * DBI
     * ggplot2
-* a .gsat.sqlite file. This is an sqlite database, intended primarily for the R script's use. But it can also be queried using any valid sqlite interface/protocol.
+* a .gsat.sqlite file. This is an sqlite database, intended primarily for the R script's use. But it can also be directly queried using any valid sqlite interface/protocol.
 
 ## Performance
-* Use the option `--processors` to increase the processor cores. Do not use a value for `--processors` that exceeds the number of input .fastq files.
+* Use the option `--processors` to increase the processor cores. Using a value for `--processors` that exceeds the number of input .fastq files will not increase performance.
 * If analyzing queries using option `--matureFa`, setting the option `--maxEdit` to 0 will speed up the analysis (but will not allow recovery of any close variants to the query sequences).
 
 ## Testing

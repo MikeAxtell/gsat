@@ -5,18 +5,27 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gsat", 
-    version="0.2",
+    version="0.1",
     author="Michael J. Axtell",
     author_email="mja18@psu.edu",
     description="General Small RNA-seq Analysis Tool",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/MikeAxtell/gsat",
-    packages=setuptools.find_packages(),
+    scripts=['bin/gsat'],
+    package_dir={'': 'src'},
+    packages=setuptools.find_packages(where='gsat'),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.7.4',
+    python_requires='>3.5, <4',
+    install_requires=['biopython','python-Levenshtein'],
+    #package_data= {
+        #'gsat': ['gsat_TEST_metadata.csv',
+                 #'gsat_TEST_queries.fasta',
+                 #'gsat_TEST_README.md']
+    #},
+    #include_package_data=True,
 )
