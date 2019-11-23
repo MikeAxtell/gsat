@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gsat", 
-    version="0.1a4",
+    version="0.1",
     author="Michael J. Axtell",
     author_email="mja18@psu.edu",
     description="General Small RNA-seq Analysis Tool",
