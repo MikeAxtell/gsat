@@ -124,7 +124,8 @@ By default, the query analysis will also report any variants up to a [Levenshtei
 
 ## Testing / Example
 
-Download (this file)[https://psu.box.com/v/gsatTestData], unpack it, and cd into thre resulting directory:
+Download (this file)[https://psu.box.com/v/gsatTestData], unpack it, and cd into the resulting directory:
+
 ```tar -xvzf gsatData.tar.gz
 cd gsatData```
 
@@ -133,6 +134,7 @@ This folder has example `--metadata` and `--matureFa` files that will be used fo
 Next we'll use `fasterq-dump` from the (NCBI SRA Toolkit)[https://www.ncbi.nlm.nih.gov/sra/docs/toolkitsoft/] suite, so first install the sra toolkit and in particular `fasterq-dump`.
 
 Retrieve three example fastq files:
+
 ```fasterq-dump SRR6074038
 fasterq-dump SRR6074040
 fasterq-dump SRR6074031```
