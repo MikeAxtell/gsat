@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gsat", 
-    version="0.1a",
+    version="0.1a2",
     author="Michael J. Axtell",
     author_email="mja18@psu.edu",
     description="General Small RNA-seq Analysis Tool",
@@ -14,7 +14,7 @@ setuptools.setup(
     url="https://github.com/MikeAxtell/gsat",
     scripts=['bin/gsat'],
     package_dir={'': 'src'},
-    packages=setuptools.find_packages(where='gsat'),
+    packages=setuptools.find_packages(where='src'),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
