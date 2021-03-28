@@ -124,7 +124,7 @@ By default, the query analysis will also report any variants up to a [Levenshtei
 
 ## Testing / Example
 
-Download [this file](https://psu.box.com/v/gsatTestData), unpack it, and cd into the resulting directory:
+Download [this file](https://plantsmallrnagenes.science.psu.edu/axtelldata/gsatData.tgz), unpack it, and cd into the resulting directory:
 
 ```
 tar -xvzf gsatData.tar.gz
